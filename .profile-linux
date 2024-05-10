@@ -1,3 +1,4 @@
-PATH="$HOME/.npm/bin:$PATH"
-DEBUGINFOD_URLS='https://debuginfod.elfutils.org/'
+export PATH="$HOME/.npm/bin:$PATH"
+export DEBUGINFOD_URLS='https://debuginfod.elfutils.org/'
+export CEE_ASSET_PATH=/home/chloe/dev/cpp/CeeEngine/CeeEditor/res
 
