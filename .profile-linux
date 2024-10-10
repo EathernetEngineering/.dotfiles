@@ -1,4 +1,4 @@
-export PATH="$HOME/.npm/bin:$PATH"
+export PATH="$HOME/.npm/bin:~/.nix-profile/bin:$PATH"
 export DEBUGINFOD_URLS='https://debuginfod.elfutils.org/'
 export CEE_ASSET_PATH=/home/chloe/dev/cpp/CeeEngine/CeeEditor/res
 
