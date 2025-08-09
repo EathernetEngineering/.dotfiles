@@ -79,7 +79,7 @@ export NVM_SOURCE="/usr/share/nvm"                     # The AUR package install
 bindkey "^P" up-line-or-beginning-search
 bindkey "^N" down-line-or-beginning-search
 
-[ -s "/home/elliott/.svm/svm.sh" ] && source "/home/elliott/.svm/svm.sh"
+[ -s "/home/chloe/.svm/svm.sh" ] && source "/home/chloe/.svm/svm.sh"
 
 # Capslock command
 alias capslock="sudo killall -USR1 caps2esc"

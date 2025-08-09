@@ -779,3 +779,11 @@ require'nvim-web-devicons'.setup {
  };
 }
 
+vim.api.nvim_create_autocmd('FileType', {
+	pattern = "xml",
+	callback = function(args)
+		vim.opt.tabstop = 2
+		vim.opt.shiftwidth = 2
+	end
+})
+
