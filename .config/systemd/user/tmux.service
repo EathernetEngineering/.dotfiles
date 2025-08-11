@@ -5,9 +5,10 @@ Documentation=man:tmux(1)
 [Service]
 Type=forking
 Environment=DISPLAY=:0
-ExecStart=/usr/bin/tmux start-server -A -D -s0
-
+ExecStart=/usr/bin/tmux start-server
+ExecStartPost=/usr/bin/tmux new -A -d -s0 -tpersistent
 ExecStop=/home/chloe/.config/tmux/plugins/tmux-resurrect/scripts/save.sh
+ExecStop=/usr/bin/tmux kill-session -t0
 ExecStop=/usr/bin/tmux kill-server
 KillMode=control-group
 
@@ -15,3 +16,4 @@ RestartSec=2
 
 [Install]
 WantedBy=default.target
+

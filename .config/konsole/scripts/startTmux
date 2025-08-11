@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+SESSIONS="$(tmux list-sessions)"
+THIS_SESSION=""
+THIS_SESSION_NAME=""
+
+terminateSession() {
+	if [ "$THIS_SESSION_NAME" != "" ] && tmux has -t$THIS_SESSION_NAME >/dev/null 2>&1; then
+		if [ $(tmux list-clients -t $THIS_SESSION_NAME | wc -l) -gt 1 ]; then
+			tmux kill-session -t $THIS_SESSION_NAME
+		fi
+	fi
+}
+
+
+if [ $(tmux list-clients -t 0 | wc -l) -gt 0 ]; then
+	tmux new -d -ttemporary
+	THIS_SESSION=$(diff --unchanged-group-format="" --old-line-format="" --new-line-format="%L" <(echo "$SESSIONS") <(tmux list-sessions))
+	THIS_SESSION_NAME="$(echo "$THIS_SESSION" | awk -F":" '{print $1}' -)"
+	trap terminateSession SIGHUP
+	tmux attach -t$THIS_SESSION_NAME
+else
+	tmux attach -t0
+fi
+
+if [ "$THIS_SESSION_NAME" != "" ] && tmux has -t$THIS_SESSION_NAME >/dev/null 2>&1; then
+	if [ $(tmux list-clients -t $THIS_SESSION_NAME | wc -l) -eq 0 ]; then
+		tmux kill-session -t $THIS_SESSION_NAME
+	fi
+fi
+

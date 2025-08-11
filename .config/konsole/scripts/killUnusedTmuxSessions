@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+SESSIONS="$(tmux list-sessions)"
+
+while IFS="" read -r line; do
+	THIS_SESSION_NAME=$(echo "$line" | awk -F":" '{print $1}' -)
+	if [ $THIS_SESSION_NAME -eq 0 ]; then
+		continue
+	fi
+	if [ $(tmux list-clients -t$THIS_SESSION_NAME | wc -l) -eq 0 ]; then
+		tmux kill-session -t$THIS_SESSION_NAME
+	fi
+	echo ""
+done <<< "$SESSIONS"
+
