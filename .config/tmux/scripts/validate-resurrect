@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+# This is the default path tmux-resurrect saves files to
+resurrect_path=~/.local/share/tmux/resurrect
+
+prune_invalid() {
+	local -a files=("$@")
+
+	for file in ${files[@]}; do
+		[[ ! -s "$file" ]] && rm "$file"
+	done
+}
+
+main() {
+	# If nothing exists there is nothing to validate
+	[[ ! -e "$resurrect_path" ]] && exit
+
+	# Get the files in the directory
+	local files=($(ls -1tbN --ignore=last --color=never "$resurrect_path"))
+	for i in $(eval echo {0..$((${#files[@]} - 1))}); do
+		# Make an absolute path
+		files[$i]="${resurrect_path}/${files[$i]}"
+	done
+
+	# If nothing exists there is nothing to validate
+	[[ -z "${files[@]}" ]] && exit
+
+	local last="$resurrect_path/last"
+
+	# Check for the file called last, this is the one that tmux actually reads
+	# from, it should also be a symbolic link
+	local last_target=""
+	[[ -L "$last" ]] && last_target=$(readlink "$last")
+
+	# Remove any corrupt files
+	prune_invalid "${files[@]}"
+
+	# The file tmux-restore will use is probably fine, if size is 0 we have a
+	# problem, otherwise we can exit here.
+	[[ -s "$last_target" ]] && exit
+	[[ -e "$last" ]] && rm "$last"
+
+	# Get the files in the directory now that we have removed corrupt files
+	files=($(ls -1tbN --ignore=last --color=never "$resurrect_path"))
+	for i in $(eval echo {0..$((${#files[@]} - 1))}); do
+		# Make an absolute path
+		files[$i]="${resurrect_path}/${files[$i]}"
+	done
+
+	# If nothing is left, that leaves nothing to do
+	[[ -z "${files[@]}" ]] && exit
+
+	# Make the `last` file point to the most recent save, this is why we asked
+	# `ls` to sort by date from newest to oldest.
+	last_target="${files[0]}"
+	ln -s "$last_target" "$last"
+}
+main "$@"
+

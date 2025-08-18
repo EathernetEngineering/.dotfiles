@@ -67,7 +67,11 @@ source <(kubectl completion zsh)
 
 # P10k customizations
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+if [ $TERM = 'linux' ]; then
+	[[ -f ~/.p10k-linux.zsh ]] && source ~/.p10k-linux.zsh
+else
+	[[ -f ~/.p10k-default.zsh ]] && source ~/.p10k-default.zsh
+fi
 
 # Fix for password store
 export PASSWORD_STORE_GPG_OPTS='--no-throw-keyids'
@@ -80,9 +84,6 @@ bindkey "^P" up-line-or-beginning-search
 bindkey "^N" down-line-or-beginning-search
 
 [ -s "/home/chloe/.svm/svm.sh" ] && source "/home/chloe/.svm/svm.sh"
-
-# Capslock command
-alias capslock="sudo killall -USR1 caps2esc"
 
 eval $(keychain --quiet --eval github_key)
 
